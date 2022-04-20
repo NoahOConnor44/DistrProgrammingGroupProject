@@ -29,9 +29,15 @@ class connToServer:
         
         # prepare streams
         self.Format = pyaudio.paInt16
+        
+        # send 4096 bytes at a time
         self.Chunks = 4096
-        self.Channels = 1 # use mono audio so dont get problems with airpods etc (that split channels for input and output)
-        self.Rate = 44100 #Hz
+        
+        # use mono audio so we dont have issues with multiuse devices like airpods that split channels for input and output
+        self.Channels = 1
+        
+        #44.1 Khz
+        self.Rate = 44100 
 
         self.input_stream = self.audio.open(format = self.Format,
                         channels = self.Channels,
@@ -78,7 +84,6 @@ class connToServer:
         self.output_stream.close()
 
     def passServerUsername(self, username):
-        print("About to send ", username) 
         self.client.send(username.encode())
         self.username = username
 
@@ -95,7 +100,7 @@ class connToServer:
 class LoginScreen:
     def __init__(self, obj):
         self.serverConn = obj
-        print(self.serverConn.host)
+        print("Connecting to AWS at ", self.serverConn.host)
         self.screen = tk.Tk()
         self.username = "NULL"
         self.IP = 0
@@ -130,6 +135,7 @@ class LoginScreen:
             self.close_screen()
             chatbox = chatBox()
             chatbox.show_screen()
+            exit()
 
 class chatBox:
     def __init__(self):
@@ -162,8 +168,9 @@ class chatBox:
 
     def send_message(self):
         msg = self.message.get()
-        self.box.insert(tk.END, msg + '\n')
-        self.clear_input()
+        if(len(msg) > 0):
+            self.box.insert(tk.END, msg + '\n')
+            self.clear_input()
 
 
 clientTest = connToServer()
@@ -172,7 +179,6 @@ login.show_screen()
 # signal.signal(signal.SIGINT, signal_handler)
 
 try:
-    
 
     # open a thread for sending voice data and receiving voice data
     t1 = threading.Thread(target = clientTest.send())
@@ -189,3 +195,5 @@ try:
     clientTest.exit()
 except Exception as e:
     print(e)
+
+exit(0)
