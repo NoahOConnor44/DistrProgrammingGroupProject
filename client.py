@@ -141,16 +141,18 @@ class chatBox:
         message_label = ttk.Label(self.screen, text="Happy Chatting!")
         message_label.pack()
 
-        self.main_box = tk.StringVar()
-        self.box_entry = ttk.Entry(self.screen)
-        self.box_entry.place(x=20, y=20, width=500, height=300)
+        self.box = tk.Text(self.screen)
+        self.box.place(x=20, y=20)
+        self.scroll = tk.Scrollbar(self.screen)
+        self.box.configure(yscrollcommand=self.scroll.set)
+        self.box.pack(side=tk.LEFT)
 
         self.message = tk.StringVar()
         self.msg_entry = ttk.Entry(self.screen, textvariable=self.message)
-        self.msg_entry.place(x=20, y=340, width=380, height=30)
+        self.msg_entry.place(x=20, y=460, width=380, height=30)
 
         button = ttk.Button(self.screen, text="Send", command=self.send_message)
-        button.place(x=420, y=340)
+        button.place(x=420, y=460)
 
     def show_screen(self):
         self.screen.mainloop()
@@ -160,7 +162,7 @@ class chatBox:
 
     def send_message(self):
         msg = self.message.get()
-        self.box_entry.insert(tk.END, self.box_entry.get() + "\n" + msg + '\n')
+        self.box.insert(tk.END, msg + '\n')
         self.clear_input()
 
 
